@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Generator
 
 import aioredis
 
@@ -13,11 +14,11 @@ class SecretsRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def create(self, secret: SecretDb) -> None:
+    async def create(self, secret: SecretCreateIn) -> SecretOut:
         raise NotImplementedError
 
     @abstractmethod
-    async def update(self, secret: SecretUpdateIn) -> SecretOut:
+    async def update(self, secret: SecretUpdateIn) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -26,11 +27,13 @@ class SecretsRepository(ABC):
 
 
 class RedisSecretsRepository(SecretsRepository):
-    def __init__(self, redis: aioredis.RedisConnection, id_generator):
+    def __init__(
+                 self, redis: aioredis.RedisConnection,
+                 id_generator: Generator[str, None, None]) -> None:
         self.redis = redis
         self.id_generator = id_generator
 
-    async def get(self, id: str) -> SecretOut:  
+    async def get(self, id: str) -> SecretOut:
         secret_dict = await self.redis.hgetall(id)
 
         if not secret_dict:

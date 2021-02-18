@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from ..core.factory import SecretsRepository, get_secrets_repository
 from ..repositories.errors import SecretDoesNotExist
-from ..schemas.secrets import SecretCreateIn, SecretOut
+from ..schemas.secrets import SecretCreateIn, SecretOut, SecretUpdateIn
 
 ROUTE_GET_SECRET: Final[str] = "secrets:get-secret"
 ROUTE_CREATE_SECRET: Final[str] = "secrets:create-secret"
@@ -21,7 +21,8 @@ router = APIRouter()
 )
 async def store_secret(
         secret: SecretCreateIn,
-        repository: SecretsRepository = Depends(get_secrets_repository)):
+        repository: SecretsRepository = Depends(get_secrets_repository)
+        ) -> SecretOut:
     '''
     Store a secret
 
@@ -38,7 +39,8 @@ async def store_secret(
 )
 async def get_secret(
         key: str,
-        repository: SecretsRepository = Depends(get_secrets_repository)):
+        repository: SecretsRepository = Depends(get_secrets_repository)
+        ) -> SecretOut:
     '''
     Get a secret:
 
@@ -57,6 +59,8 @@ async def get_secret(
         if secret.max_accesses == 0:
             await repository.delete(secret.id)
         else:
-            await repository.update(secret)
+            secret_update: SecretUpdateIn = SecretUpdateIn(
+                **secret.dict(exclude_unset=True))
+            await repository.update(secret_update)
 
     return secret

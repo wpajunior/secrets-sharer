@@ -15,4 +15,3 @@ class TtlMixin(BaseModel):
         title="The time to leave in minutes of the secret",
         ge=1,
         le=10080)
-
