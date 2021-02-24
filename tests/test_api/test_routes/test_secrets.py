@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from pytest import mark
 from starlette import status
 
-from app.routers.secrets import ROUTE_CREATE_SECRET, ROUTE_GET_SECRET
+from app.routes.secrets import ROUTE_CREATE_SECRET, ROUTE_GET_SECRET
 from tests import test_helpers
 from tests.test_helpers import SecretParameterNames
 

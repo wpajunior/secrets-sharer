@@ -3,7 +3,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from .core.config import ALLOWED_HOSTS, API_PREFIX, API_TITLE, DEBUG, VERSION
 from .core.events import create_start_app_handler, create_stop_app_handler
-from .routers import secrets
+from .routes import secrets
 
 
 def create_application() -> FastAPI:
