@@ -11,5 +11,6 @@ def get_repository_pool(request: Request) -> Redis:
 
 
 async def get_secrets_repository(
-        pool: Redis = Depends(get_repository_pool)) -> SecretsRepository:
+    pool: Redis = Depends(get_repository_pool),
+) -> SecretsRepository:
     return RedisSecretsRepository(pool, id_generator())
