@@ -1,5 +1,6 @@
 from typing import Final
 
+from faker import Faker
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pytest import mark
@@ -19,8 +20,10 @@ def test_404_when_secret_does_not_exist(client: TestClient, app: FastAPI) -> Non
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_can_store_and_retrieve_secret(client: TestClient, app: FastAPI) -> None:
-    secret = "encrypted_secret"
+def test_can_store_and_retrieve_secret(
+    faker: Faker, client: TestClient, app: FastAPI
+) -> None:
+    secret = faker.text()
     body = test_helpers.create_secret_json_input_body(ttl=5, encrypted_secret=secret)
 
     url = app.url_path_for(ROUTE_CREATE_SECRET)
@@ -44,10 +47,8 @@ def test_can_store_and_retrieve_secret(client: TestClient, app: FastAPI) -> None
     assert json[SecretParameterNames.TTL] > 0
 
 
-def test_ttl_is_required(client: TestClient, app: FastAPI) -> None:
-    body = test_helpers.create_secret_json_input_body(
-        encrypted_secret="encrypted_secret"
-    )
+def test_ttl_is_required(faker: Faker, client: TestClient, app: FastAPI) -> None:
+    body = test_helpers.create_secret_json_input_body(encrypted_secret=faker.text())
 
     url = app.url_path_for(ROUTE_CREATE_SECRET)
 
@@ -69,9 +70,11 @@ def test_encrypted_secret_is_required(client: TestClient, app: FastAPI) -> None:
 
 
 @mark.parametrize("ttl", [-1, 0])
-def test_ttl_greater_than_zero(ttl: int, client: TestClient, app: FastAPI) -> None:
+def test_ttl_greater_than_zero(
+    ttl: int, faker: Faker, client: TestClient, app: FastAPI
+) -> None:
     body = test_helpers.create_secret_json_input_body(
-        ttl=ttl, encrypted_secret="encrypted_secret"
+        ttl=ttl, encrypted_secret=faker.text()
     )
 
     url = app.url_path_for(ROUTE_CREATE_SECRET)
@@ -84,10 +87,10 @@ def test_ttl_greater_than_zero(ttl: int, client: TestClient, app: FastAPI) -> No
 
 @mark.parametrize("max_accesses", [-1, 0])
 def test_max_accesses_greater_than_zero(
-    max_accesses: int, client: TestClient, app: FastAPI
+    max_accesses: int, faker: Faker, client: TestClient, app: FastAPI
 ) -> None:
     body = test_helpers.create_secret_json_input_body(
-        ttl=5, encrypted_secret="encrypted_secret", max_accesses=max_accesses
+        ttl=5, encrypted_secret=faker.text(), max_accesses=max_accesses
     )
 
     url = app.url_path_for(ROUTE_CREATE_SECRET)
@@ -100,10 +103,10 @@ def test_max_accesses_greater_than_zero(
 
 @mark.parametrize("max_accesses", [1, 3, 7])
 def test_secret_can_not_be_accessed_more_than_max_accesses_times(
-    max_accesses: int, client: TestClient, app: FastAPI
+    max_accesses: int, faker: Faker, client: TestClient, app: FastAPI
 ) -> None:
     body = test_helpers.create_secret_json_input_body(
-        ttl=5, encrypted_secret="encrypted_secret", max_accesses=max_accesses
+        ttl=5, encrypted_secret=faker.text(), max_accesses=max_accesses
     )
 
     url = app.url_path_for(ROUTE_CREATE_SECRET)
