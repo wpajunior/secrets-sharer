@@ -12,9 +12,11 @@ RUN pip install -U pip
 
 COPY poetry.lock pyproject.toml ./
 
+ARG ENVIRONMENT=${ENVIRONMENT}
+
 RUN pip install poetry==1.1.4 && \
     poetry config virtualenvs.in-project true && \
-    poetry install --no-dev --no-interaction --no-ansi
+    poetry install $(test "$ENVIRONMENT" == production && echo "--no-dev") --no-interaction --no-ansi
 
 # Runtime image
 FROM python:3.9-alpine AS runtime-image
