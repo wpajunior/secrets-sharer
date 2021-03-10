@@ -1,0 +1,17 @@
+version: '3.0'
+
+services:
+  test:
+    environment:
+      - ENVIRONMENT=development
+    env_file:
+      - .env
+    build:
+      dockerfile: Dockerfile
+      context: .
+    entrypoint: /app/.venv/bin/pytest
+    depends_on:
+      - "db"
+
+  db:
+    image: redis:6-alpine
