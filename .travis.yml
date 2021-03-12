@@ -9,5 +9,6 @@ jobs:
     - stage: tests
       name: "Unit Tests"
       script:
+      - cat .env
       - docker-compose build test
       - docker-compose run test
