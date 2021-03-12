@@ -13,5 +13,15 @@ services:
     depends_on:
       - "db"
 
+  type-check:
+    environment:
+      - ENVIRONMENT=development
+    env_file:
+      - .env
+    build:
+      dockerfile: Dockerfile
+      context: .
+    entrypoint: /app/.venv/bin/mypy app tests
+
   db:
     image: redis:6-alpine

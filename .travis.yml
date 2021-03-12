@@ -17,7 +17,12 @@ before_install:
 jobs:
   include:
     - stage: tests
-      name: "Unit Tests"
+      name: "Unit tests"
       script:
       - docker-compose build test
       - docker-compose run test
+    - stage: tests
+      name: "Type check"
+      script:
+      - docker-compose build type-check
+      - docker-compose run type-check
