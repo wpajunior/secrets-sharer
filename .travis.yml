@@ -1,6 +1,15 @@
 services:
   - docker
 
+env:
+  global:
+    - ALLOWED_HOSTS='*'
+    - API_PREFIX='/api/secrets'
+    - API_TITLE='Secrets Sharer'
+    - DATABASE_URL='redis://secrets-sharer_db_1/0?encoding=utf-8'
+    - DEBUG=True
+    - VERSION='0.0.1'
+
 jobs:
   include:
     - stage: tests
