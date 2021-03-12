@@ -23,5 +23,11 @@ services:
       context: .
     entrypoint: /app/.venv/bin/mypy app tests
 
+  static-analysis:
+    build:
+        dockerfile: Dockerfile
+        context: .
+    entrypoint: /app/.venv/bin/flake8
+
   db:
     image: redis:6-alpine
