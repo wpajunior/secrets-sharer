@@ -6,7 +6,7 @@ WORKDIR /app
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-RUN apk add --no-cache gcc gcc musl-dev python3-dev libffi-dev openssl-dev cargo
+RUN apk add --no-cache gcc musl-dev python3-dev libffi-dev openssl-dev cargo
 
 RUN pip install -U pip
 
